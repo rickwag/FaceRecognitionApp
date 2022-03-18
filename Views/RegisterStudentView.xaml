@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FaceRecognitionApp.Views"
              xmlns:converters="clr-namespace:FaceRecognitionApp.Converters"
+             xmlns:views="clr-namespace:FaceRecognitionApp.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -61,50 +62,8 @@
                Grid.Row="0"
                Grid.ColumnSpan="2"/>
 
-        <Border CornerRadius="10"
-                Grid.Column="0"
-                Grid.Row="1">
-
-            <Border.Background>
-                <ImageBrush Stretch="UniformToFill"
-                            ImageSource="{Binding CurrentFrame, Converter={StaticResource FrameToImageSourceConverter}}"
-                            RenderOptions.BitmapScalingMode="Fant"/>
-            </Border.Background>
-        </Border>
-
-        <Grid Grid.Row="1"
-              Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.2*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height=".7*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <Rectangle Fill="{StaticResource purpleishColor}"
-                       Stroke="{StaticResource purpleishColor}"
-                       Grid.Column="1"
-                       Grid.Row="0"
-                       Panel.ZIndex="1"
-                       Opacity=".65"
-                       RadiusX="10"
-                       RadiusY="10"/>
-
-            <Border CornerRadius="40"
-                    Grid.Column="1"
-                    Grid.Row="0"
-                    Opacity=".65">
-
-                <Border.Background>
-                    <ImageBrush Stretch="UniformToFill"
-                            ImageSource="{Binding CurrentFrameROI, Converter={StaticResource FrameToImageSourceConverter}}"
-                            RenderOptions.BitmapScalingMode="Fant"/>
-                </Border.Background>
-            </Border>
-        </Grid>
+        <views:VideoCaptureView Grid.Row="1"
+                                Grid.Column="0"/>
 
         <StackPanel Orientation="Vertical"
                     MinWidth="160"

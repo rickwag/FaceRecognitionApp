@@ -88,3 +88,5 @@ C:\Users\pato\source\repos\FaceRecognitionApp\bin\Debug\net5.0-windows\girlHatFa
 C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\FaceRecognitionApp_Content.g.cs
 C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\AttendanceView.g.cs
 C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\AttendanceView.baml
+C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\VideoCaptureView.g.cs
+C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\VideoCaptureView.baml
