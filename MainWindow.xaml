@@ -9,7 +9,9 @@
         Title="MainWindow" Height="450" Width="800" FontFamily="Roboto" ResizeMode="NoResize">
     
     <Grid>
-        <views:RegisterStudentView DataContext="{Binding CurrentViewModel}"/>
+        <!--<views:RegisterStudentView DataContext="{Binding CurrentViewModel}"/>-->
+
+        <views:MarkAttendanceView DataContext="{Binding CurrentViewModel}"/>
 
         <!--<Grid.ColumnDefinitions>
             <ColumnDefinition Width=".7*"/>

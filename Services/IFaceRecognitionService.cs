@@ -21,7 +21,7 @@ namespace FaceRecognitionApp.Services
         public void Train();
         public Dictionary<System.Drawing.Rectangle, PredictionResult> RecognizeFaces(System.Drawing.Rectangle[] faces, Image<Bgr, Byte> currentFrame);
         public int CheckIfKnowFace(PredictionResult result);
-        public void IndicateFacePredictionResults(Dictionary<System.Drawing.Rectangle, PredictionResult> predictionResults, Image<Bgr, Byte> currentFrame);
+        public Image<Bgr, Byte> IndicateFacePredictionResults(Dictionary<System.Drawing.Rectangle, PredictionResult> predictionResults, Image<Bgr, Byte> currentFrame);
         public Image<Bgr, Byte> GetRegionOfInterest(Image<Bgr, Byte> currentFrame, System.Drawing.Rectangle face);
     }
 }

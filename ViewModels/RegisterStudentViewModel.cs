@@ -54,13 +54,13 @@ namespace FaceRecognitionApp.ViewModels
         public bool HasDetectedFaces => faces.Length > 0;
         #endregion
 
-        public RegisterStudentViewModel(IDBService _dBService)
+        public RegisterStudentViewModel(IDBService _dBService, IFaceRecognitionService _faceRecognitionService)
         {
             dBService = _dBService;
 
             AddNewStudentCommand = new AddNewStudentCommand(this, dBService);
 
-            FaceRecognitionServ = new FaceRecognitionService();
+            FaceRecognitionServ = _faceRecognitionService;
 
             FaceRecognitionServ.InitialiseTimer(OnTimerTick);
 

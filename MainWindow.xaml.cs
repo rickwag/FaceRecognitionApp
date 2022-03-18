@@ -1,12 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Windows;
-using System.Windows.Media;
-
-using Emgu.CV;
-using Emgu.CV.Structure;
-
-using FaceRecognitionApp.Services;
+﻿using System.Windows;
 
 
 namespace FaceRecognitionApp
@@ -16,16 +8,6 @@ namespace FaceRecognitionApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        #region fields
-        bool canRecognizeFaces = false;
-        bool canAddStudent = false;
-        string mainDirPath = Directory.GetCurrentDirectory() + @"\TrainingImages";
-        Image<Bgr, Byte> currentFrame = null;
-
-
-        IFaceRecognitionService faceRecognitionService = new FaceRecognitionService();
-        #endregion
-
         public MainWindow()
         {
             InitializeComponent();

@@ -90,3 +90,7 @@ C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\Att
 C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\AttendanceView.baml
 C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\VideoCaptureView.g.cs
 C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\VideoCaptureView.baml
+C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\TopBarView.g.cs
+C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\TopBarView.baml
+C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\MarkAttendanceView.g.cs
+C:\Users\pato\source\repos\FaceRecognitionApp\obj\Debug\net5.0-windows\Views\MarkAttendanceView.baml

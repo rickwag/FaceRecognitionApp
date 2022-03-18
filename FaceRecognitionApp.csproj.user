@@ -12,7 +12,13 @@
     <Compile Update="Views\AttendanceView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\MarkAttendanceView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\RegisterStudentView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\TopBarView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\VideoCaptureView.xaml.cs">
@@ -26,7 +32,13 @@
     <Page Update="Views\AttendanceView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\MarkAttendanceView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\RegisterStudentView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\TopBarView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\VideoCaptureView.xaml">

@@ -33,11 +33,14 @@ namespace FaceRecognitionApp.Services
         private List<int> trainingImagesLabels = new();
 
         private EventHandler savedTrainingImagesEvent;
+        private IDBService dBService;
 
         public EventHandler SavedTrainingImagesEvent { get => savedTrainingImagesEvent; set => savedTrainingImagesEvent = value; }
 
-        public FaceRecognitionService()
+        public FaceRecognitionService(IDBService _dBService)
         {
+            dBService = _dBService;
+
             videoCapture = new VideoCapture();
 
             imagesStudentToID = GetStudentToIDDictionary();
@@ -159,6 +162,11 @@ namespace FaceRecognitionApp.Services
             return predictionResults;
         }
 
+        /// <summary>
+        /// checks if a face has been recognized
+        /// </summary>
+        /// <param name="result">takes in the result of prediction</param>
+        /// <returns>returns -1 if the face was not recognized otherwise returns the student id</returns>
         public int CheckIfKnowFace(FaceRecognizer.PredictionResult result)
         {
             if (result.Label != -1 && (result.Distance > 20 && result.Distance < 57))
@@ -167,7 +175,7 @@ namespace FaceRecognitionApp.Services
                 return -1;
         }
 
-        public void IndicateFacePredictionResults(Dictionary<Rectangle, FaceRecognizer.PredictionResult> predictionResults, Image<Bgr, Byte> currentFrame)
+        public Image<Bgr, Byte> IndicateFacePredictionResults(Dictionary<Rectangle, FaceRecognizer.PredictionResult> predictionResults, Image<Bgr, Byte> currentFrame)
         {
             foreach (var predictionResult in predictionResults)
             {
@@ -178,20 +186,17 @@ namespace FaceRecognitionApp.Services
 
                 if (faceKnown)
                 {
-                    CvInvoke.PutText(currentFrame, GetStudentLabelFromID(result.Label), new System.Drawing.Point(face.X - 2, face.Y - 2), FontFace.HersheyComplex, 1, new Bgr(0, 255, 0).MCvScalar);
+                    CvInvoke.PutText(currentFrame, GetStudentLabelFromID(result.Label), new Point(face.X - 2, face.Y - 2), FontFace.HersheyComplex, 1, new Bgr(0, 255, 0).MCvScalar);
                     CvInvoke.Rectangle(currentFrame, face, new Bgr(0, 255, 0).MCvScalar, 2);
                 }
                 else
                 {
-                    CvInvoke.PutText(currentFrame, "unknown", new System.Drawing.Point(face.X - 2, face.Y - 2), FontFace.HersheyComplex, 1, new Bgr(255, 0, 0).MCvScalar);
+                    CvInvoke.PutText(currentFrame, "unknown", new Point(face.X - 2, face.Y - 2), FontFace.HersheyComplex, 1, new Bgr(255, 0, 0).MCvScalar);
                     CvInvoke.Rectangle(currentFrame, face, new Bgr(0, 0, 255).MCvScalar, 2);
                 }
             }
-        }
 
-        private void SaveStudentToIDDictionary()
-        {
-            File.WriteAllText("studentImagesToID.txt", JsonConvert.SerializeObject(imagesStudentToID));
+            return currentFrame;
         }
 
         private Dictionary<string, int> GetStudentToIDDictionary()
@@ -211,9 +216,7 @@ namespace FaceRecognitionApp.Services
 
         private string GetStudentLabelFromID(int id)
         {
-            var result = imagesStudentToID.Keys.Count > 0 ? imagesStudentToID.First(keyValue => keyValue.Value == id).Key : id.ToString();
-
-            return result;
+            return dBService.GetStudentName(id);
         }
 
         public ImageSource GetImageSourceFrom(Image<Bgr, Byte> image)

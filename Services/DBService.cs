@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using FaceRecognitionApp.Models;
 
@@ -27,6 +28,14 @@ namespace FaceRecognitionApp.Services
             }
 
             return id;
+        }
+
+        public string GetStudentName(int id)
+        {
+            using var dbContext = dbContextFactory.CreateDbContext();
+            var result = dbContext.Students.First(student => student.ID == id);
+
+            return result.FullName;
         }
     }
 }
