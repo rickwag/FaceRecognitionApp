@@ -1,0 +1,241 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.IO;
+using System.Threading;
+using System.Diagnostics;
+using System.Windows.Threading;
+
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Face;
+
+using Newtonsoft.Json;
+
+
+namespace FaceRecognitionApp
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        #region fields
+        VideoCapture videoCapture = null;
+        DispatcherTimer timer;
+        CascadeClassifier cascadeClassifier = new CascadeClassifier("haarcascade_frontalface_alt2.xml");
+        bool canRecognizeFaces = false;
+        bool canAddStudent = false;
+        string mainDirPath = Directory.GetCurrentDirectory() + @"\TrainingImages";
+        List<Mat> trainingImages = new();
+        List<int> trainingImagesLabels = new();
+        Dictionary<string, int> imagesStudentToID= new();
+        Image<Bgr, Byte> currentFrame = null;
+        #endregion
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            imagesStudentToID = GetStudentToIDDictionary();
+        }
+
+        private void OnCaptureClick(object sender, RoutedEventArgs e)
+        {
+            videoCapture = new VideoCapture();
+
+            timer = new DispatcherTimer();
+            timer.Tick += new EventHandler(timer_tick);
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            timer.Start();
+        }
+
+        private void timer_tick(object sender, EventArgs e)
+        {
+            currentFrame = videoCapture.QueryFrame().ToImage<Bgr, Byte>();
+
+            if (currentFrame != null)
+            {
+                //convert to gray image for detection
+                Image<Gray, Byte> grayImage = currentFrame.Convert<Gray, Byte>();
+
+                System.Drawing.Rectangle[] faces = cascadeClassifier.DetectMultiScale(grayImage, 1.3, 3, System.Drawing.Size.Empty, System.Drawing.Size.Empty);
+
+                //if faces detected
+                if (faces.Length > 0)   
+                {
+                    foreach (var face in faces)
+                    {
+                        CvInvoke.Rectangle(currentFrame, face, new Bgr(0, 0, 255).MCvScalar, 2);
+
+                        //show image of ROI(region of interest)
+                        var roiImage = currentFrame;
+                        roiImage.ROI = face;
+
+                        roiImageBox.Source = GetImageSourceFrom(roiImage);
+
+                        if (canAddStudent && !String.IsNullOrEmpty(newStudentTxtBox.Text))
+                        {
+                            //store 10 images with 1 second delay
+                            var path = mainDirPath + @"\" + newStudentTxtBox.Text;
+                            //create new if not exist
+                            if (!Directory.Exists(path))
+                                Directory.CreateDirectory(path);
+
+                            //save the images on a separate thread to avoid freezes
+                            Task.Factory.StartNew(() =>
+                            {
+                                for (int i = 0; i < 10; i++)
+                                {
+                                    var savePath = path + @"\" + (i + 1) + ".jpg";
+                                    roiImage.Resize(200, 200, Inter.Cubic).Save(savePath);
+
+                                    Debug.WriteLine(savePath);
+
+                                    //wait for 1 second before saving again
+                                    Thread.Sleep(1000);
+                                }
+                            });
+
+                            canAddStudent = false;
+                        }
+
+                        //recognize faces
+                        if (canRecognizeFaces)
+                        {
+                            //var faceRecognizer = new EigenFaceRecognizer();
+                            //faceRecognizer.Read(Directory.GetCurrentDirectory() + @"\" + "trainedFaceRecognizer.yaml");
+                            var faceRecognizer = new LBPHFaceRecognizer();
+                            faceRecognizer.Read(Directory.GetCurrentDirectory() + @"\" + "trainner.yml");
+
+                            //grayscale
+                            var grayScaleRoi = roiImage.Convert<Gray, Byte>().Resize(200, 200, Inter.Cubic);
+                            CvInvoke.EqualizeHist(grayScaleRoi, grayScaleRoi);
+
+                            var result = faceRecognizer.Predict(grayScaleRoi);
+
+                            if (result.Label != -1 && result.Distance > 45)
+                            {
+                                //if face recognized
+                                CvInvoke.PutText(currentFrame, GetStudentLabelFromID(result.Label), new System.Drawing.Point(face.X - 2, face.Y - 2), FontFace.HersheyComplex, 1, new Bgr(0, 255, 0).MCvScalar);
+                                CvInvoke.Rectangle(currentFrame, face, new Bgr(0, 255, 0).MCvScalar, 2);
+                            }
+                            else
+                            {
+                                //if face not recognized
+                                CvInvoke.PutText(currentFrame, "unknown", new System.Drawing.Point(face.X - 2, face.Y - 2), FontFace.HersheyComplex, 1, new Bgr(255, 0, 0).MCvScalar);
+                                CvInvoke.Rectangle(currentFrame, face, new Bgr(0, 0, 255).MCvScalar, 2);
+                            }
+                        }
+                    }
+                }
+
+
+                imageBox.Source = GetImageSourceFrom(currentFrame);
+            }
+        }
+
+        private ImageSource GetImageSourceFrom(Image<Bgr, Byte> image)
+        {
+            byte[] imageBytes = image.ToJpegData();
+
+            return (ImageSource)new ImageSourceConverter().ConvertFrom(imageBytes);
+        }
+
+        private void OnAddStudentClick(object sender, RoutedEventArgs e)
+        {
+            canAddStudent = true;
+        }
+
+        private void OnTrainClick(object sender, RoutedEventArgs e)
+        {
+            //training
+            //get all image files from directory 
+            string[] files = Directory.GetFiles(mainDirPath, "*.jpg", SearchOption.AllDirectories);
+
+            var count = imagesStudentToID.Values.Count;
+            foreach (var file in files)
+            {
+                //create grayscale image
+                Image<Gray, Byte> trainingImage = new Image<Gray, byte>(file);
+
+                var fileSplits = file.Split("\\");
+                var studentLabel = fileSplits[fileSplits.Length - 2];
+
+                trainingImages.Add(trainingImage.Mat);
+
+                //keep same id if student already exists otherwise add new student with id
+                if (!imagesStudentToID.ContainsKey(studentLabel))
+                    imagesStudentToID[studentLabel] = count++;
+
+                var id = imagesStudentToID[studentLabel];
+
+                trainingImagesLabels.Add(id);
+            }
+
+            //EigenFaceRecognizer eigenFaceRecognizer = new EigenFaceRecognizer(files.Length, 7000);
+            //eigenFaceRecognizer.Train(trainingImages.ToArray(), trainingImagesLabels.ToArray());
+            //eigenFaceRecognizer.Write("trainedFaceRecognizer.yaml");
+
+            var faceRecognizer = new LBPHFaceRecognizer();
+            faceRecognizer.Train(trainingImages.ToArray(), trainingImagesLabels.ToArray());
+            faceRecognizer.Write("trainner.yml");
+
+            //for (int i = 0; i < trainingImages.Count; i++)
+            //{
+            //    Debug.WriteLine($"{trainingImages[i].ToString()} => {trainingImagesLabels[i]}");
+            //}
+
+            //foreach (var student in imagesStudentToID.Keys)
+            //{
+            //    Debug.WriteLine($"{student} => {imagesStudentToID[student]}");
+            //}
+
+            SaveStudentToIDDictionary();
+        }
+
+        private void OnRecognizeClick(object sender, RoutedEventArgs e)
+        {
+            canRecognizeFaces = true;
+        }
+
+        private string GetStudentLabelFromID(int id)
+        {
+            var result = imagesStudentToID.Keys.Count > 0 ? imagesStudentToID.First(keyValue => keyValue.Value == id).Key : id.ToString();
+
+            return result;
+        }
+
+        private void SaveStudentToIDDictionary()
+        {
+            File.WriteAllText("studentImagesToID.txt", JsonConvert.SerializeObject(imagesStudentToID));
+        }
+
+        private Dictionary<string, int> GetStudentToIDDictionary()
+        {
+            try
+            {
+                var dic = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText("studentImagesToID.txt"));
+                return dic;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            return new Dictionary<string, int>();
+        }
+    }
+}

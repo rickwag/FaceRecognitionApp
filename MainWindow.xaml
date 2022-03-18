@@ -1,0 +1,63 @@
+﻿<Window x:Class="FaceRecognitionApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FaceRecognitionApp"
+        xmlns:views="clr-namespace:FaceRecognitionApp.Views"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" FontFamily="Roboto" ResizeMode="NoResize">
+    
+    <Grid>
+        <views:RegisterStudentView DataContext="{Binding CurrentViewModel}"/>
+
+        <!--<Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".7*"/>
+            <ColumnDefinition Width=".3*"/>
+        </Grid.ColumnDefinitions>
+
+        <Image x:Name="imageBox"/>
+
+        <StackPanel Grid.Column="1"
+                    Margin="10 20">
+            <Button Content="capture"
+                    Height="50px"
+                    FontSize="24px"
+                    Foreground="OrangeRed"
+                    Click="OnCaptureClick"
+                    x:Name="captureBtn"/>
+
+            <Image x:Name="roiImageBox"
+                   Margin="20"
+                   MinHeight="180"/>
+
+            <TextBox x:Name="newStudentTxtBox"
+                     MinHeight="30"
+                     Text="newStudent"
+                     TextAlignment="Right"
+                     VerticalContentAlignment="Center"
+                     FontSize="18"
+                     Foreground="DarkGreen"/>
+            <Button x:Name="newStudentBtn"
+                    Content="add student"
+                    FontSize="18"
+                    MinHeight="40"
+                    Foreground="OrangeRed"
+                    Click="OnAddStudentClick"/>
+            <Button x:Name="trainBtn"
+                    Content="train"
+                    FontSize="18"
+                    MinHeight="40"
+                    Foreground="OrangeRed"
+                    Click="OnTrainClick"
+                    Margin="0 10"/>
+            <Button x:Name="recognizeBtn"
+                    Content="recognize"
+                    FontSize="18"
+                    MinHeight="40"
+                    Foreground="OrangeRed"
+                    Click="OnRecognizeClick"
+                    Margin="0 10"/>
+        </StackPanel>-->
+    </Grid>
+</Window>
