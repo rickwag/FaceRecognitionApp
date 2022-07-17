@@ -9,6 +9,7 @@ using Emgu.CV.Structure;
 using FaceRecognitionApp.Commands;
 using FaceRecognitionApp.Models;
 using FaceRecognitionApp.Services;
+using FaceRecognitionApp.Stores;
 
 namespace FaceRecognitionApp.ViewModels
 {
@@ -22,6 +23,7 @@ namespace FaceRecognitionApp.ViewModels
         private int numberOfImagesToStore = 60;
         private bool canStoreTrainingImages = false;
         private int currentStudentID = -1;
+        private IDialogService dialogService = new DialogService();
         #endregion
 
         #region properties
@@ -51,16 +53,22 @@ namespace FaceRecognitionApp.ViewModels
         }
 
         public ICommand AddNewStudentCommand { get; set; }
+        public ICommand NavigateToDashBoard { get; set; }
         public bool HasDetectedFaces => faces.Length > 0;
+        public ProgressViewModel ProgViewModel { get; set; } = new ProgressViewModel();
         #endregion
 
-        public RegisterStudentViewModel(IDBService _dBService, IFaceRecognitionService _faceRecognitionService)
+        public RegisterStudentViewModel(NavigationStore navigationStore, IDBService _dBService, Lecture lecture)
         {
+            NewStudent.Lecture = lecture;
+
+            NavigateToDashBoard = new NavigateCommand(() => navigationStore.CurrentViewModel = new DashBoardViewModel(navigationStore, _dBService));
+
             dBService = _dBService;
 
-            AddNewStudentCommand = new AddNewStudentCommand(this, dBService);
+            AddNewStudentCommand = new AddNewStudentCommand(this, dBService, dialogService);
 
-            FaceRecognitionServ = _faceRecognitionService;
+            FaceRecognitionServ = new FaceRecognitionService(_dBService);
 
             FaceRecognitionServ.InitialiseTimer(OnTimerTick);
 
@@ -83,8 +91,7 @@ namespace FaceRecognitionApp.ViewModels
 
                 if (canStoreTrainingImages)
                 {
-                    var firstFace = faces[0];
-                    FaceRecognitionServ.StoreTrainingImages(currentStudentID.ToString(), firstFace, CurrentFrame, numberOfImagesToStore);
+                    FaceRecognitionServ.StoreTrainingImages(currentStudentID.ToString(), CurrentFrame, numberOfImagesToStore, ProgViewModel);
 
                     canStoreTrainingImages = false;
                 }
@@ -96,14 +103,28 @@ namespace FaceRecognitionApp.ViewModels
         {
             canStoreTrainingImages = true;
             currentStudentID = studentID;
+
+            ProgViewModel.ProgressValue = 40;
+            ProgViewModel.Info = "saving training images...";
         }
 
         private void OnSavedTrainingImages(object sender, EventArgs e)
         {
+            ProgViewModel.Info = "training...";
+
             //train just after saving
             FaceRecognitionServ.Train();
 
+            dialogService.CloseDialog(nameof(ProgressViewModel));
+
             MessageBox.Show($"successfully added {NewStudent.FullName} with registration number {NewStudent.RegNumber}.", "adding new student", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            NavigateToDashBoard.Execute(null);
+        }
+
+        public override void Dispose()
+        {
+            FaceRecognitionServ.StopCaptureVideo();
         }
     }
 }

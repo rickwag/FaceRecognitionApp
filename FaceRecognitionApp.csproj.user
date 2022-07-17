@@ -12,10 +12,22 @@
     <Compile Update="Views\AttendanceView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\CreateNewClassDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\DashBoardView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\MarkAttendanceView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\ProgressView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\RegisterStudentView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SelectClassDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\TopBarView.xaml.cs">
@@ -32,10 +44,22 @@
     <Page Update="Views\AttendanceView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\CreateNewClassDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\DashBoardView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\MarkAttendanceView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\ProgressView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\RegisterStudentView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SelectClassDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\TopBarView.xaml">

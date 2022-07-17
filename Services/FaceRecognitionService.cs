@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -13,6 +12,8 @@ using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Face;
 using Emgu.CV.Structure;
+
+using FaceRecognitionApp.ViewModels;
 
 using Newtonsoft.Json;
 
@@ -28,7 +29,6 @@ namespace FaceRecognitionApp.Services
         private string mainDirPath = Directory.GetCurrentDirectory() + @"\TrainingImages";
         private int totalImageSaveTime = 10; //seconds
 
-        private Dictionary<string, int> imagesStudentToID = new();
         private List<Mat> trainingImages = new();
         private List<int> trainingImagesLabels = new();
 
@@ -36,14 +36,13 @@ namespace FaceRecognitionApp.Services
         private IDBService dBService;
 
         public EventHandler SavedTrainingImagesEvent { get => savedTrainingImagesEvent; set => savedTrainingImagesEvent = value; }
+        public Rectangle[] DetectedFaces { get; set; } 
 
         public FaceRecognitionService(IDBService _dBService)
         {
             dBService = _dBService;
 
             videoCapture = new VideoCapture();
-
-            imagesStudentToID = GetStudentToIDDictionary();
         }
         
 
@@ -60,12 +59,20 @@ namespace FaceRecognitionApp.Services
             return videoCapture.QueryFrame().ToImage<Bgr, Byte>();
         }
 
+        public void StopCaptureVideo()
+        {
+            timer.Stop();
+            videoCapture.Dispose();
+        }
+
         public Rectangle[] DetectFaces(Image<Bgr, byte> currentFrame)
         {
             //convert to gray image for detection
             Image<Gray, Byte> grayImage = currentFrame.Convert<Gray, Byte>();
 
             var faces = cascadeClassifier.DetectMultiScale(grayImage, 1.3, 3, System.Drawing.Size.Empty, System.Drawing.Size.Empty);
+
+            DetectedFaces = faces;
 
             return faces;
         }
@@ -82,9 +89,8 @@ namespace FaceRecognitionApp.Services
             return currentFrame;
         }
 
-        public async Task StoreTrainingImages(string studentName, Rectangle face, Image<Bgr, byte> currentFrame, int numberOfImages)
+        public async Task StoreTrainingImages(string studentName, Image<Bgr, byte> currentFrame, int numberOfImages, ProgressViewModel progressViewModel)
         {
-            //store 10 images with 1 second delay
             var path = mainDirPath + @"\" + studentName;
             //create new if not exist
             if (!Directory.Exists(path))
@@ -93,16 +99,30 @@ namespace FaceRecognitionApp.Services
             //save the images on a separate thread to avoid freezes
             await Task.Factory.StartNew(() =>
             {
-                for (int i = 0; i < numberOfImages; i++)
+                var count = 0;
+                while (count < numberOfImages)
                 {
-                    var roiImage = GetRegionOfInterest(currentFrame, face);
-                    var savePath = path + @"\" + (i + 1) + ".jpg";
-                    roiImage.Resize(200, 200, Inter.Cubic).Save(savePath);
+                    try
+                    {
+                        var face = DetectedFaces[0];
 
-                    Debug.WriteLine(savePath);
+                        var roiImage = GetRegionOfInterest(currentFrame, face);
+                        var savePath = path + @"\" + (count + 1) + ".jpg";
+                        roiImage.Resize(200, 200, Inter.Cubic).Save(savePath);
 
-                    //wait before saving again
-                    Thread.Sleep(totalImageSaveTime / numberOfImages * 1000);
+                        progressViewModel.ProgressValue += 1;
+
+                        //wait before saving again
+                        var delay = (int)MathF.Ceiling(((float)totalImageSaveTime / (float)numberOfImages * 1000));
+                        Thread.Sleep(delay);
+
+                        count++;
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+
+                        
+                    }
                 }
             });
 
@@ -155,7 +175,7 @@ namespace FaceRecognitionApp.Services
                 CvInvoke.EqualizeHist(grayScaleRoi, grayScaleRoi);
 
                 var result = faceRecognizer.Predict(grayScaleRoi);
-
+                
                 predictionResults.Add(face, result);
             }
 
@@ -186,6 +206,7 @@ namespace FaceRecognitionApp.Services
 
                 if (faceKnown)
                 {
+                    CvInvoke.PutText(currentFrame, predictionResult.Value.Distance.ToString("F"), new Point(face.X - 2, face.Y + 30), FontFace.HersheyComplex, 1, new Bgr(255, 0, 0).MCvScalar);
                     CvInvoke.PutText(currentFrame, GetStudentLabelFromID(result.Label), new Point(face.X - 2, face.Y - 2), FontFace.HersheyComplex, 1, new Bgr(0, 255, 0).MCvScalar);
                     CvInvoke.Rectangle(currentFrame, face, new Bgr(0, 255, 0).MCvScalar, 2);
                 }

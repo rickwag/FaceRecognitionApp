@@ -11,6 +11,9 @@ namespace FaceRecognitionApp.Models
         public int ID { get; set; }
         public string RegNumber { get; set; }
         public string FullName { get; set; }
+
+        //navigation properties
+        public int LectureID { get; set; }
         public Lecture Lecture { get; set; }
     }
 }

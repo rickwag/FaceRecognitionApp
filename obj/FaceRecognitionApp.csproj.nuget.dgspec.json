@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\pato\\source\\repos\\FaceRecognitionApp\\FaceRecognitionApp.csproj": {}
+    "D:\\CodeProjects\\Test\\FaceRecognitionApp\\FaceRecognitionApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\pato\\source\\repos\\FaceRecognitionApp\\FaceRecognitionApp.csproj": {
+    "D:\\CodeProjects\\Test\\FaceRecognitionApp\\FaceRecognitionApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\pato\\source\\repos\\FaceRecognitionApp\\FaceRecognitionApp.csproj",
+        "projectUniqueName": "D:\\CodeProjects\\Test\\FaceRecognitionApp\\FaceRecognitionApp.csproj",
         "projectName": "FaceRecognitionApp",
-        "projectPath": "C:\\Users\\pato\\source\\repos\\FaceRecognitionApp\\FaceRecognitionApp.csproj",
+        "projectPath": "D:\\CodeProjects\\Test\\FaceRecognitionApp\\FaceRecognitionApp.csproj",
         "packagesPath": "C:\\Users\\pato\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\pato\\source\\repos\\FaceRecognitionApp\\obj\\",
+        "outputPath": "D:\\CodeProjects\\Test\\FaceRecognitionApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
@@ -45,6 +45,10 @@
         "net5.0-windows7.0": {
           "targetAlias": "net5.0-windows",
           "dependencies": {
+            "EPPlus": {
+              "target": "Package",
+              "version": "[5.8.8, )"
+            },
             "Emgu.CV": {
               "target": "Package",
               "version": "[4.5.5.4823, )"
@@ -86,12 +90,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[5.0.13, 5.0.13]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
@@ -100,7 +98,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     }

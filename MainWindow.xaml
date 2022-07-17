@@ -5,13 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FaceRecognitionApp"
         xmlns:views="clr-namespace:FaceRecognitionApp.Views"
+        xmlns:viewModels="clr-namespace:FaceRecognitionApp.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" FontFamily="Roboto" ResizeMode="NoResize">
+        Title="MainWindow" Height="450" Width="800" FontFamily="Roboto" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     
     <Grid>
+
+        <ContentControl Content="{Binding CurrentViewModel}">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type viewModels:DashBoardViewModel}">
+                    <views:DashBoardView/>
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type viewModels:RegisterStudentViewModel}">
+                    <views:RegisterStudentView/>
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type viewModels:MarkAttendanceViewModel}">
+                    <views:MarkAttendanceView/>
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
+        
         <!--<views:RegisterStudentView DataContext="{Binding CurrentViewModel}"/>-->
 
-        <views:MarkAttendanceView DataContext="{Binding CurrentViewModel}"/>
+        <!--<views:MarkAttendanceView DataContext="{Binding CurrentViewModel}"/>-->
+
+        <!--<views:DashBoardView/>-->
 
         <!--<Grid.ColumnDefinitions>
             <ColumnDefinition Width=".7*"/>

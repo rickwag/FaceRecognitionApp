@@ -7,7 +7,7 @@
              xmlns:views="clr-namespace:FaceRecognitionApp.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <Grid Background="{StaticResource purpleishColor}">
         <Grid.RowDefinitions>
             <RowDefinition Height=".08*"/>
@@ -24,5 +24,51 @@
 
         <views:VideoCaptureView Grid.Row="1"
                                 Grid.Column="0"/>
+
+        <Grid Grid.Row="1"
+              Grid.Column="1">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height=".1*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height=".5*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Students Present"
+                       Foreground="{StaticResource greenishColor}"
+                       FontSize="18"
+                       Margin="40 0"/>
+
+            <ListBox ItemsSource="{Binding AttendanceEntries}"
+                     Background="Transparent"
+                     Margin="40 0"
+                     BorderBrush="{StaticResource skyishColor}"
+                     Grid.Row="1">
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical"
+                                    Margin="0 0 0 10">
+                            <TextBlock Text="{Binding Student.FullName}"
+                                       FontSize="15"
+                                       Foreground="{StaticResource bluishColor}"/>
+                            <TextBlock Text="{Binding Student.RegNumber}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource greenishColor}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Button Content="Print to Excel"
+                    Width="200"
+                    Height="40"
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Background="{StaticResource bluishColor}"
+                    Foreground="{StaticResource purpleishColor}"
+                    Grid.Row="2"
+                    Command="{Binding PrintToExcelCommand}"/>
+        </Grid>
     </Grid>
 </UserControl>

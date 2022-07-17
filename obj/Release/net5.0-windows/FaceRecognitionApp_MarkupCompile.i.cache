@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\pato\source\repos\FaceRecognitionApp\obj\Release\net5.0-windows\
+D:\CodeProjects\Test\FaceRecognitionApp\obj\Release\net5.0-windows\
 FaceRecognitionApp
 none
 false
 TRACE;RELEASE;NET;NET5_0;NETCOREAPP
-C:\Users\pato\source\repos\FaceRecognitionApp\App.xaml
-11407045341
-
-5-50657155
-194-2112340306
-MainWindow.xaml;
+D:\CodeProjects\Test\FaceRecognitionApp\App.xaml
+101140775284
+5254093676
+541052295316
+22478520333
+MainWindow.xaml;Views\AttendanceView.xaml;Views\CreateNewClassDialog.xaml;Views\DashBoardView.xaml;Views\MarkAttendanceView.xaml;Views\ProgressView.xaml;Views\RegisterStudentView.xaml;Views\SelectClassDialog.xaml;Views\TopBarView.xaml;Views\VideoCaptureView.xaml;
 
 False
 

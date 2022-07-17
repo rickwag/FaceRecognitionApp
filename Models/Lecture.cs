@@ -12,6 +12,8 @@ namespace FaceRecognitionApp.Models
         public string Name { get; set; }
         public DateTime LectureDateTime { get; set; }
         public string LecturerName { get; set; }
+
+        //navigation properties
         public List<Student> Students { get; set; }
     }
 }

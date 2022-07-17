@@ -11,11 +11,15 @@ namespace FaceRecognitionApp.Commands
     {
         private RegisterStudentViewModel registerStudentViewModel;
         private IDBService dBService;
+        private IDialogService dialogService;
+        private ProgressViewModel progressViewModel;
 
-        public AddNewStudentCommand(RegisterStudentViewModel _registerStudentViewModel, IDBService _dBService)
+        public AddNewStudentCommand(RegisterStudentViewModel _registerStudentViewModel, IDBService _dBService, IDialogService _dialogService)
         {
             registerStudentViewModel = _registerStudentViewModel;
             dBService = _dBService;
+            dialogService = _dialogService;
+            progressViewModel = registerStudentViewModel.ProgViewModel;
         }
 
         public override void Execute(object parameter)
@@ -31,11 +35,20 @@ namespace FaceRecognitionApp.Commands
             }
             else
             {
+                if (!dialogService.CheckIfExists(nameof(ProgressViewModel)))
+                    dialogService.CreateNewDialog(progressViewModel, App.Current.MainWindow);
+
+                progressViewModel.ProgressValue = 10;
+                progressViewModel.Info = $"saving {registerStudentViewModel.NewStudent.FullName}...";
+
+                dialogService.ShowAsWindow(nameof(ProgressViewModel));
+
                 //save new student
                 var id = dBService.AddNewStudent(new Student()
                 {
                     FullName = registerStudentViewModel.NewStudent.FullName,
-                    RegNumber = registerStudentViewModel.NewStudent.RegNumber
+                    RegNumber = registerStudentViewModel.NewStudent.RegNumber,
+                    Lecture = registerStudentViewModel.NewStudent.Lecture
                 });
 
                 //save new student's training face images

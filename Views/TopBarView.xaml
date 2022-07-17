@@ -10,10 +10,16 @@
 
         <Rectangle Fill="{StaticResource bluishColor}"/>
 
-        <Image Source="{StaticResource homeIcon}"
-               HorizontalAlignment="Left"
-               Width="25"
-               Margin="10 0"/>
+        <Button Command="{Binding NavigateToDashBoard}">
+            <Button.Template>
+                <ControlTemplate>
+                    <Image Source="{StaticResource homeIcon}"
+                           HorizontalAlignment="Left"
+                           Width="25"
+                           Margin="10 0"/>          
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
         <Image Source="{StaticResource optionsIcon}"
                Width="25"/>

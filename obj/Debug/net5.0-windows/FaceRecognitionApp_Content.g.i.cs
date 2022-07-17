@@ -8,6 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("darkstudent.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("eye.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("eyelock.png")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("girlhatface.jpg")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("lookfor.png")]
 
 

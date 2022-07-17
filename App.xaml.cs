@@ -2,6 +2,7 @@
 
 using FaceRecognitionApp.Models;
 using FaceRecognitionApp.Services;
+using FaceRecognitionApp.Stores;
 using FaceRecognitionApp.ViewModels;
 
 using Microsoft.EntityFrameworkCore;
@@ -34,9 +35,13 @@ namespace FaceRecognitionApp
                 dbContext.Database.Migrate();
             }
 
+            //navigation store initialization
+            var navigationStore = new NavigationStore();
+            navigationStore.CurrentViewModel = new DashBoardViewModel(navigationStore, dBService);
+
             //mainwindow initialization
             var mainWindow = new MainWindow();
-            var mainViewModel = new MainViewModel(dBService);
+            var mainViewModel = new MainViewModel(dBService, navigationStore);
 
             mainWindow.DataContext = mainViewModel;
             mainWindow.Show();

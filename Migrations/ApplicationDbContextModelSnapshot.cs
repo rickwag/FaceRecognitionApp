@@ -69,7 +69,7 @@ namespace FaceRecognitionApp.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("LectureID")
+                    b.Property<int>("LectureID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("RegNumber")
@@ -101,7 +101,9 @@ namespace FaceRecognitionApp.Migrations
                 {
                     b.HasOne("FaceRecognitionApp.Models.Lecture", "Lecture")
                         .WithMany("Students")
-                        .HasForeignKey("LectureID");
+                        .HasForeignKey("LectureID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Lecture");
                 });

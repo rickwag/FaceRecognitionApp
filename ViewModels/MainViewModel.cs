@@ -1,20 +1,31 @@
 ﻿using FaceRecognitionApp.Services;
+using FaceRecognitionApp.Stores;
 
 namespace FaceRecognitionApp.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
+        #region fields
         private IDBService dBService;
-        private IFaceRecognitionService faceRecognitionService;
+        private readonly NavigationStore navigationStore; 
+        #endregion
 
-        public BaseViewModel CurrentViewModel { get; set; }
+        public BaseViewModel CurrentViewModel => navigationStore.CurrentViewModel;
 
-        public MainViewModel(IDBService _dBService)
+        public MainViewModel(IDBService _dBService, NavigationStore _navigationStore)
         {
             dBService = _dBService;
-            faceRecognitionService = new FaceRecognitionService(dBService);
 
-            CurrentViewModel = new MarkAttendanceViewModel(dBService, faceRecognitionService);
+            navigationStore = _navigationStore;
+
+            navigationStore.currentViewModelChanged += CurrentViewModelChanged;
+
+            //CurrentViewModel = new MarkAttendanceViewModel(dBService, faceRecognitionService);
+        }
+
+        private void CurrentViewModelChanged()
+        {
+            OnPropertyChanged(nameof(CurrentViewModel));
         }
     }
 }
